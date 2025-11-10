@@ -1,0 +1,115 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+struct elev {
+    char nume[21];
+    char id[21];
+    int note[9];
+    struct elev *next;
+};
+
+struct elev *adauga_final(struct elev *head) {
+    struct elev *ptr, *nod_nou;
+
+    if (head == NULL) {
+        head = malloc(sizeof(struct elev));
+        scanf("%s", head->nume);
+        scanf("%s", head->id);
+        for (int j = 0; j < 9; j++) {
+            scanf("%d", &head->note[j]);
+        }
+        head->next = NULL;
+        return head;
+    }
+
+    ptr = head;
+    while (ptr->next != NULL) {
+        ptr = ptr->next;
+    }
+
+    nod_nou = malloc(sizeof(struct elev));
+    if (nod_nou != NULL) {
+        scanf("%s", nod_nou->nume);
+        scanf("%s", nod_nou->id);
+        for (int j = 0; j < 9; j++) {
+            scanf("%d", &nod_nou->note[j]);
+        }
+        nod_nou->next = NULL;
+        ptr->next = nod_nou;
+    }
+    return head;
+}
+
+void afisare_totala(struct elev *head) {
+    struct elev *ptr = head;
+    while (ptr != NULL) {
+        printf("%s\n%s\n", ptr->nume, ptr->id);
+        for (int i = 0; i < 9; i++) {
+            printf("%d ", ptr->note[i]);
+        }
+        printf("\n");
+        ptr = ptr->next;
+    }
+}
+
+void mediemare(struct elev *head) {
+    struct elev *ptr = head;
+    float medie, maxx = -1.0;
+
+    while (ptr != NULL) {
+        medie = 0;
+        for (int i = 0; i < 9; i++) {
+            medie += ptr->note[i];
+        }
+        medie /= 9.0;
+        if (medie > maxx) {
+            maxx = medie;
+        }
+        ptr = ptr->next;
+    }
+
+    ptr = head;
+    while (ptr != NULL) {
+        medie = 0;
+        for (int i = 0; i < 9; i++) {
+            medie += ptr->note[i];
+        }
+        medie /= 9.0;
+        if (medie == maxx) {
+            printf("%s\n", ptr->nume);
+        }
+        ptr = ptr->next;
+    }
+}
+
+int main() {
+    struct elev *head = NULL;
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        head = adauga_final(head);
+    }
+
+    int comm;
+    scanf("%d", &comm);
+    switch (comm) {
+        case 1:
+            afisare_totala(head);
+            break;
+        case 2:
+            mediemare(head);
+            break;
+        default:
+            break;
+    }
+
+    struct elev *tmp;
+    while (head != NULL) {
+        tmp = head;
+        head = head->next;
+        free(tmp);
+    }
+
+    return 0;
+}
